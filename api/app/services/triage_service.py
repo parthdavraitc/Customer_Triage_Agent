@@ -7,7 +7,6 @@ class TriageService:
     async def process_single_triage(self, message: str) -> TriageResponse:
         # 1. Primary classification extraction call
         raw_json = await llm_service.extract_triage(message)
-        print(f"Extracted Triage Data: {raw_json}")
         # 2. Extract values mapped for your guardrail input parameters
         category = raw_json.get("category")
         suggested_owner = raw_json.get("suggested_owner")
@@ -26,7 +25,6 @@ class TriageService:
             deployment=llm_service.deployment_name,
             urgency_reason=urgency_reason
         )
-        print(f"Guardrail Check Result: {guard_result['valid']}")
         if not guard_result["valid"]:
             raise HTTPException(
                 status_code=422, 
